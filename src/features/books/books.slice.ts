@@ -1,6 +1,6 @@
 import { createSelector, createEntityAdapter, createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
-import { Book } from './Book.model'
 import { AppState } from '../../app/store'
+import { Book } from './Book.model'
 
 const booksAdapter = createEntityAdapter<Book>({
   // Assume IDs are stored in a field other than `book.id`
@@ -9,15 +9,18 @@ const booksAdapter = createEntityAdapter<Book>({
   sortComparer: (a, b) => a.title.localeCompare(b.title),
 })
 
-type State = EntityState<Book> & {
-  loading: 'idle' | 'pending'
+export type BooksState = EntityState<Book> & {
+  loading?: 'idle' | 'pending'
+  hello?: 'world' | 'migrated' | undefined
 }
-const initialState: State = {
-  loading: 'idle',
+
+const initialState: BooksState = {
+  // loading: 'idle',
+  // hello: 'world',
   ...booksAdapter.getInitialState(),
 }
 
-export const booksSlice = createSlice({
+export const slice = createSlice({
   name: 'books',
   initialState,
   reducers: {
@@ -36,14 +39,37 @@ export const booksSlice = createSlice({
 })
 
 export const actions = {
-  ...booksSlice.actions,
+  ...slice.actions,
 }
 
 const rootSelector = (state: AppState) => state.books
 const booksSelectors = booksAdapter.getSelectors<AppState>(rootSelector)
 
 export const selectors = {
-  loading: createSelector(rootSelector, (state) => state.loading),
+  loading: createSelector(rootSelector, (state) => false /*state.loading*/),
   all: booksSelectors.selectAll,
   byId: (id: number) => (state: AppState) => booksSelectors.selectById(state, id),
 }
+
+export const migrations = {
+  0: (state: any) => ({ ...state, loading: 'idle' }),
+  1: (state: any) => ({ ...state, hello: 'migrated' }),
+  2: (state: any) => ({ ...state, whatabout: 'bob' }),
+}
+
+// //export const migrations: Migrations = new Migrations()
+// // Added loading
+// type State0 = EntityState<Book>
+// type State1 = State0 & {
+//   loading: 'idle' | 'pending'
+// }
+// migrations.push((state: State0): State1 => {
+//   return { ...state, loading: 'idle' }
+// })
+// // // // // Added hello
+// // type State2 = State1 & {
+// //   hello: 'world' | 'migrated' | undefined
+// // }
+// // migrations.push((state: any) => {
+// //   return { ...state, hello: 'migrated' }
+// // })

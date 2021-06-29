@@ -7,12 +7,15 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@redux-offline/redux-offline": "^2.6.0-native.1",
     "@reduxjs/toolkit": "^1.6.0",
     "axios": "^0.21.1",
     "react": "^17.0.0",
     "react-dom": "^17.0.0",
     "react-redux": "^7.2.4",
-    "react-router-dom": "^5.2.0"
+    "react-router-dom": "^5.2.0",
+    "redux-persist": "^6.0.0",
+    "redux-persist-transform-encrypt": "^3.0.1"
   },
   "devDependencies": {
     "@react-native-community/eslint-config": "^3.0.0",
