@@ -1,6 +1,7 @@
 import { createSelector, createEntityAdapter, createSlice, EntityState, PayloadAction } from '@reduxjs/toolkit'
 import { AppState } from '../../app/store'
 import { Book } from './Book.model'
+import { createMigrations } from '../../app/Migrations'
 
 const booksAdapter = createEntityAdapter<Book>({
   // Assume IDs are stored in a field other than `book.id`
@@ -46,30 +47,16 @@ const rootSelector = (state: AppState) => state.books
 const booksSelectors = booksAdapter.getSelectors<AppState>(rootSelector)
 
 export const selectors = {
-  loading: createSelector(rootSelector, (state) => false /*state.loading*/),
+  loading: createSelector(rootSelector, (state) => state.loading),
   all: booksSelectors.selectAll,
   byId: (id: number) => (state: AppState) => booksSelectors.selectById(state, id),
 }
 
-export const migrations = {
+export const migrations = createMigrations({
   0: (state: any) => ({ ...state, loading: 'idle' }),
   1: (state: any) => ({ ...state, hello: 'migrated' }),
   2: (state: any) => ({ ...state, whatabout: 'bob' }),
-}
-
-// //export const migrations: Migrations = new Migrations()
-// // Added loading
-// type State0 = EntityState<Book>
-// type State1 = State0 & {
-//   loading: 'idle' | 'pending'
-// }
-// migrations.push((state: State0): State1 => {
-//   return { ...state, loading: 'idle' }
-// })
-// // // // // Added hello
-// // type State2 = State1 & {
-// //   hello: 'world' | 'migrated' | undefined
-// // }
-// // migrations.push((state: any) => {
-// //   return { ...state, hello: 'migrated' }
-// // })
+  3: (state: any) => ({ ...state, whatabout: 'bob 3' }),
+  4: (state: any) => ({ ...state, whatabout: 'bob 4' }),
+  5: (state: any) => ({ ...state, whatabout: 'bob 5' }),
+})
